@@ -1,4 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+import { CreateUserDto } from './dto';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
-export class AuthService {}
+export class AuthService extends PrismaClient implements OnModuleInit {
+  private readonly logger = new Logger(AuthService.name);
+
+  onModuleInit() {
+    try {
+      this.$connect();
+      this.logger.log('Prisma client connected: MongoDB');
+    } catch (error) {
+      this.logger.error(error);
+    }
+  }
+
+  async registerUser({ email, name, password }: CreateUserDto) {
+    try {
+      const user = await this.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (user) {
+        throw new RpcException({
+          code: 400,
+          message: 'User already exists',
+        });
+      }
+
+      return await this.user.create({
+        data: {
+          name,
+          email,
+          password,
+        },
+      });
+    } catch (error) {
+      throw new RpcException({
+        code: 400,
+        message: error.message,
+      });
+    }
+  }
+}
