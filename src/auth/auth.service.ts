@@ -27,7 +27,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
 
       if (user) {
         throw new RpcException({
-          code: 400,
+          statusCode: 400,
           message: 'User already exists',
         });
       }
@@ -41,7 +41,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
       });
     } catch (error) {
       throw new RpcException({
-        code: 400,
+        statusCode: 400,
         message: error.message,
       });
     }
