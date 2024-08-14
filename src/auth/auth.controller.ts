@@ -1,22 +1,29 @@
 import { MessagePattern, Payload } from '@nestjs/microservices';
-
 import { Controller } from '@nestjs/common';
+
+import { CreateUserDto } from '../dto';
 import { AuthService } from './auth.service';
+import { LoginUserDto } from 'src/dto/login-user.dto';
 
 @Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @MessagePattern({ cmd: 'auth.regiter.user' })
-  async registerUser(@Payload() data: any) {
+  async registerUser(@Payload() createUserDto: CreateUserDto) {
     return {
-      data,
+      createUserDto,
       message: 'User registered successfully',
     };
   }
 
   @MessagePattern({ cmd: 'auth.login.user' })
-  loginUser() {}
+  async loginUser(@Payload() loginUserDto: LoginUserDto) {
+    return {
+      loginUserDto,
+      message: 'User registered successfully',
+    };
+  }
 
   @MessagePattern({ cmd: 'auth.verify.user' })
   verifyToken() {}
