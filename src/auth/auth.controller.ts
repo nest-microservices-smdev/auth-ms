@@ -16,10 +16,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: 'auth.login.user' })
   async loginUser(@Payload() loginUserDto: LoginUserDto) {
-    return {
-      loginUserDto,
-      message: 'User registered successfully',
-    };
+    return this.authService.loginUser(loginUserDto);
   }
 
   @MessagePattern({ cmd: 'auth.verify.user' })

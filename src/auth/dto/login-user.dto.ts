@@ -9,7 +9,7 @@ export class LoginUserDto {
   @IsString()
   @IsNotEmpty()
   @IsEmail()
-  username: string;
+  email: string;
 
   @IsString()
   @IsNotEmpty()
