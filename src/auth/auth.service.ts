@@ -29,6 +29,23 @@ export class AuthService extends PrismaClient implements OnModuleInit {
     return this.jwtService.sign(payload);
   }
 
+  async verifyToken(token: string) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { sub, iat, exp, ...user } = this.jwtService.verify(token);
+
+      return {
+        user,
+        token: await this.signJwt(user),
+      };
+    } catch (error) {
+      throw new RpcException({
+        statusCode: 401,
+        message: 'Unauthorized',
+      });
+    }
+  }
+
   async registerUser({ email, name, password }: CreateUserDto) {
     try {
       const user = await this.user.findUnique({
